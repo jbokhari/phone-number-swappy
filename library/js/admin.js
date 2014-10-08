@@ -5,7 +5,7 @@
  * Source url for this code for reference, thanks Ram
 **/
 jQuery(document).ready(function($) {
-    // console.log(wp);
+/*    // console.log(wp);
     var _custom_media = true,
         _orig_send_attachment = wp.media.editor.send.attachment;
 
@@ -43,5 +43,18 @@ jQuery(document).ready(function($) {
     });
     $('.invalid').on("hover", function(){
         $(this).removeClass("invalid");
+    });*/
+    var useGetBox = $('#pns_use_get_var');
+    if ( useGetBox.is(":checked") ){
+        $("#pns_get_tracking_var-container").show();
+    }
+    useGetBox.on("click", function(){
+        if (useGetBox.is(":checked")){
+            $("#pns_get_tracking_var-container").slideDown();
+        }
+        else{
+            $("#pns_get_tracking_var-container").slideUp();
+        }
+
     })
 });

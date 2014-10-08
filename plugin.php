@@ -49,7 +49,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		$this->useFrontendCss = false;
 		$this->useFrontendJs = false;
 		$this->useAdminCss = true;
-		$this->useAdminJs = false;
+		$this->useAdminJs = true;
 		$plugin = plugin_basename(__FILE__); 
 		add_filter("plugin_action_links_$plugin", array($this, 'add_settings_page') );
 	}
@@ -70,8 +70,8 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	  return $links; 
 	}
 	function swappy_header_stuff(){
-		if (is_user_logged_in())
-			return;
+		// if (is_user_logged_in())
+		// 	return;
 		/*
 		 * $sereferral (bool) used to track whether this is a refrral or not 
 		 */
@@ -81,17 +81,24 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		 */
 		// $phoneNumbers;
 		//if cookie is not set
-		$cookieName = $this->prefix . "_referral";
+		$cookieName = $this->prefix . "referral";
 		$days = $this->lava_options['cookie_length']->get_value();
-		$this->_log("Cookie length set for $days days.");
+		$use_get_var = $this->lava_options['use_get_var']->get_value();
+		$get_tracking_var = $this->lava_options['get_tracking_var']->get_value();
+		$swappy_reset_link = $this->lava_options['swappy_reset_link']->get_value();
+		
+		if ( isset( $_GET['swappy_cookie_reset'] ) && $_GET['swappy_cookie_reset'] == '1' ){
+			setcookie( $cookieName, "", time()-3600);
+			return;
+		}
+
 		if ( ! isset( $_COOKIE[$cookieName] ) ){
-		    // then lets set it, first...
-		    // check if referral var available
-		    if( isset( $_SERVER['HTTP_REFERER']) ) {
+
+		    if( $use_get_var == "false" && isset( $_SERVER['HTTP_REFERER']) ) {
 		        // if so parse url...
 		        $ref = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
 		        // and check if referral from google, yahoo, bing
-		        if(true || strpos( $ref, "google.com" ) !== false || strpos( $ref, "yahoo.com" ) !== false || strpos( $ref, "bing.com" ) !== false ) { 
+		        if( strpos( $ref, "google.com" ) !== false || strpos( $ref, "yahoo.com" ) !== false || strpos( $ref, "bing.com" ) !== false ) { 
 		            // is a referral
 		            $sereferral = true;
 		            setcookie( $cookieName, "true", time() + ( 60 * 60 * 24 * $days )  );
@@ -102,6 +109,9 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		            setcookie( $cookieName, "false", time() + ( 60 * 60 * 24 * $days )  );
 		        }
 		    // default to non referral if var is unvailable
+		    } else if ( $use_get_var == "true" && isset( $_GET[$get_tracking_var] ) ){
+		    	$sereferral = true;
+	            setcookie( $cookieName, "true", time() + ( 60 * 60 * 24 * $days )  );
 		    } else {
 		        $sereferral = false;
 		        setcookie( $cookieName, "false", time() + ( 60 * 60 * 24 * $days )  );
@@ -158,10 +168,26 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	 ?>
 	<script>
 		jQuery(document).ready(function($){
-			console.log("Test");
-			$("<?php echo $jsTarget1 ?>").html("<?php echo $phoneNumbers[0]; ?>");
-			$("<?php echo $jsTarget2 ?>").html("<?php echo $phoneNumbers[1]; ?>");
-			$("<?php echo $jsTarget3 ?>").html("<?php echo $phoneNumbers[2]; ?>");
+
+			var swappy1 = $("<?php echo $jsTarget1; ?>").html("<?php echo $phoneNumbers[0]; ?>");
+
+			if (swappy1.attr("href") != ""){
+				//in each case we assume if it has an href, it's a tel: link
+				swappy1.attr("href", "tel:<?php echo $phoneNumbers[0]; ?>");
+			}
+
+			var swappy2 = $("<?php echo $jsTarget2; ?>").html("<?php echo $phoneNumbers[1]; ?>");
+
+			if (swappy2.attr("href") != ""){
+				swappy2.attr("href", "tel:<?php echo $phoneNumbers[1]; ?>");
+			}
+
+			var swappy3 = $("<?php echo $jsTarget3; ?>").html("<?php echo $phoneNumbers[2]; ?>");
+
+			if (swappy3.attr("href") != ""){
+				swappy3.attr("href", "tel:<?php echo $phoneNumbers[2]; ?>");
+			}
+
 		});
 	</script>
 	<?php

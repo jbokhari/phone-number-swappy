@@ -12,10 +12,13 @@
 .pns_options-page .option-block {
 	margin: 15px 0;
 }
-.pns_options-page .option-block:nth-child(1),
-.pns_options-page .option-block:nth-child(3),
-.pns_options-page .option-block:nth-child(5),
-.pns_options-page .option-block:nth-child(7) {
+#pns_get_tracking_var-container {
+	display: none;
+}
+.pns_options-page .option-block:nth-child(2),
+.pns_options-page .option-block:nth-child(4),
+.pns_options-page .option-block:nth-child(6),
+.pns_options-page .option-block:nth-child(9) {
 	margin-bottom: 45px;
 }
 
