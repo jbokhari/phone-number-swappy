@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -35,7 +35,7 @@ require_once('lava/class.lava.plugin.core.php');
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	public $prefix = 'pns_';
-	public $ver = '1.0.0';
+	public $ver = '1.0.1';
 	public $option_prefix = 'pns_';
 	public $name = 'pns';
 	public $localize_object = 'PNS';
@@ -134,6 +134,11 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		$this->referral= $sereferral;
 
 	}
+	/**
+	 * Set Referral Cookie - accepts bool true of false and does the rest, ie gets domain, cookie name, path and expiration based on settings.
+	 * @param bool $val, converts into string to save as cookie value
+	 * @return void
+	 */
 	function set_referral_cookie($val){
 
 		$cookieName = $this->prefix . "referral";
