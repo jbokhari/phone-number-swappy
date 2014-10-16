@@ -102,6 +102,20 @@ $dynamic = array( //array of available options
 	      "default" => 7,
 	      "tab" => 1
 	      ),
+	array(
+	      "name" => "path",
+	      "label" => "Cookie Path",
+	      "type" => "str",
+	      "default" => '/',
+	      "tab" => 1
+	      ),
+	array(
+	      "name" => "domain",
+	      "label" => "Cookie Domain",
+	      "type" => "str",
+	      "default" => '',
+	      "tab" => 1
+	      ),
 
 );
 

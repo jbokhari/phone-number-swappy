@@ -82,10 +82,10 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		// $phoneNumbers;
 		//if cookie is not set
 		$cookieName = $this->prefix . "referral";
-		$days = $this->lava_options['cookie_length']->get_value();
 		$use_get_var = $this->lava_options['use_get_var']->get_value();
 		$get_tracking_var = $this->lava_options['get_tracking_var']->get_value();
 		$swappy_reset_link = $this->lava_options['swappy_reset_link']->get_value();
+		
 		
 		if ( isset( $_GET['swappy_cookie_reset'] ) && $_GET['swappy_cookie_reset'] == '1' ){
 			setcookie( $cookieName, "", time()-3600);
@@ -101,20 +101,22 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		        if( strpos( $ref, "google.com" ) !== false || strpos( $ref, "yahoo.com" ) !== false || strpos( $ref, "bing.com" ) !== false ) { 
 		            // is a referral
 		            $sereferral = true;
-		            setcookie( $cookieName, "true", time() + ( 60 * 60 * 24 * $days )  );
-		            // one week time
+		            $this->set_referral_cookie(true);
 		        } else {
 		            // doesn't look like it was a referrral
 		            $sereferral = false;
-		            setcookie( $cookieName, "false", time() + ( 60 * 60 * 24 * $days )  );
+		        	$this->set_referral_cookie(false);
+
 		        }
 		    // default to non referral if var is unvailable
 		    } else if ( $use_get_var == "true" && isset( $_GET[$get_tracking_var] ) ){
 		    	$sereferral = true;
-	            setcookie( $cookieName, "true", time() + ( 60 * 60 * 24 * $days )  );
+		        $this->set_referral_cookie(true);
+
 		    } else {
 		        $sereferral = false;
-		        setcookie( $cookieName, "false", time() + ( 60 * 60 * 24 * $days )  );
+		        $this->set_referral_cookie(false);
+
 		    }
 		} else {
 		    //otherwise consult the almighty cookie
@@ -123,8 +125,35 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		    } else {
 		        $sereferral = false;
 		    }
+		    if ( $_COOKIE[$cookieName] == "true" ){
+		        $sereferral = true;
+		    } else {
+		        $sereferral = false;
+		    }
 		}
 		$this->referral= $sereferral;
+
+	}
+	function set_referral_cookie($val){
+
+		$cookieName = $this->prefix . "referral";
+		$domain = $this->lava_options['domain']->get_value();
+		$path = $this->lava_options['path']->get_value();
+		$days = $this->lava_options['cookie_length']->get_value();
+		$time = time() + ( 60 * 60 * 24 * $days );
+
+		if ($val === true){
+			$cookieval = "true";
+		} else {
+			$cookieval = "false";
+		}
+
+		if ( $domain == '' ){
+			$domain = null;
+		}
+		$this->_log("Path is set to $path");
+ 		setcookie( $cookieName, $cookieval, $time, $path, $domain );
+
 	}
 	function is_referral(){
 		if ( ! isset( $this->referral ) || empty( $this->referral ) )
