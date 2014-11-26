@@ -195,9 +195,16 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		$infooter = $this->lava_options['infooter']->get_value() == "true" ? true : false;
 		wp_register_script( 'phone_number_swappy_javascript', $this->jsdir . 'frontend.js', array( 'jquery' ), $this->ver, $infooter );
 		//makes sure numbers are set
+		
+		// print_r($this);
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'enque_phone_number_swappy_javascript' ) );
+		
+	}
+	function enque_phone_number_swappy_javascript(){
 		$this->get_numbers();
 		$phoneNumbers = $this->numbers;
-		// print_r($this);
+		
 		$jsTarget1 = $this->lava_options["jsTarget1"]->get_value();
 		$jsTarget2 = $this->lava_options["jsTarget2"]->get_value();
 		$jsTarget3 = $this->lava_options["jsTarget3"]->get_value();
@@ -209,10 +216,6 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 			"phoneNumbers" => $phoneNumbers
 		);
 		wp_localize_script( 'phone_number_swappy_javascript', $this->localize_object, $jsvars );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enque_phone_number_swappy_javascript' ) );
-		
-	}
-	function enque_phone_number_swappy_javascript(){
 		wp_enqueue_script( 'phone_number_swappy_javascript' );
 	}
 }
