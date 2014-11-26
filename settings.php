@@ -9,42 +9,42 @@ $dynamic = array( //array of available options
 	**************************************/
 	array(
 	      "name" => "phoneNumber1",
-	      "label" => "Phone Number 1",
+	      "label" => "Default Phone Number 1",
 	      "type" => "str",
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
   	array(
 	      "name" => "swappyNumber1",
-	      "label" => "Phone 1 Alt",
+	      "label" => "Referral Phone Number 1 (Twilio)",
 	      "type" => "str",
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
 	array(
 	      "name" => "phoneNumber2",
-	      "label" => "Phone Number 2",
+	      "label" => "Default Phone Number 2",
 	      "type" => "str",
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
 	array(
 	      "name" => "swappyNumber2",
-	      "label" => "Phone 2 Alt",
+	      "label" => "Referral Phone Number 2 (Twilio)",
 	      "type" => "str",
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
 	array(
 	      "name" => "phoneNumber3",
-	      "label" => "Phone Number 3",
+	      "label" => "Default Phone Number 3",
 	      "type" => "str",
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
 	array(
 	      "name" => "swappyNumber3",
-	      "label" => "Phone 3 Alt",
+	      "label" => "Referral Phone Number 3 (Twilio)",
 	      "type" => "str",
 	      "tab" => 0,
 	      "in_js" => true
