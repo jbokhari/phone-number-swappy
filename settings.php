@@ -11,37 +11,43 @@ $dynamic = array( //array of available options
 	      "name" => "phoneNumber1",
 	      "label" => "Phone Number 1",
 	      "type" => "str",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
   	array(
 	      "name" => "swappyNumber1",
 	      "label" => "Phone 1 Alt",
 	      "type" => "str",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "phoneNumber2",
 	      "label" => "Phone Number 2",
 	      "type" => "str",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "swappyNumber2",
 	      "label" => "Phone 2 Alt",
 	      "type" => "str",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "phoneNumber3",
 	      "label" => "Phone Number 3",
 	      "type" => "str",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "swappyNumber3",
 	      "label" => "Phone 3 Alt",
 	      "type" => "str",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "jsTarget1",
@@ -49,7 +55,8 @@ $dynamic = array( //array of available options
 	      "description" => "Span ID for first phone number",
 	      "type" => "str",
 	      "default" => ".phone-swap-1",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "jsTarget2",
@@ -57,7 +64,8 @@ $dynamic = array( //array of available options
 	      "description" => "Span ID for first phone number",
 	      "type" => "str",
 	      "default" => ".phone-swap-2",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "jsTarget3",
@@ -65,7 +73,8 @@ $dynamic = array( //array of available options
 	      "description" => "Span ID for first phone number",
 	      "type" => "str",
 	      "default" => ".phone-swap-3",
-	      "tab" => 0
+	      "tab" => 0,
+	      "in_js" => true
 	      ),
 	array(
 	      "name" => "use_get_var",
@@ -85,7 +94,7 @@ $dynamic = array( //array of available options
 	      ),
 	array(
 	      "name" => "swappy_reset_link",
-	      "label" => "Swappy Reset Link",
+	      "label" => "Swappy Reset Link, e.g. example.com?swappy_reset",
 	      "description" => "(get var, e.g. example.com?swappy_reset)",
 	      "type" => "str",
 	      "default" => "swappy_reset",
@@ -99,7 +108,7 @@ $dynamic = array( //array of available options
 				"min" => 0,
 				"step" => 1
 			),
-	      "default" => 7,
+	      "default" => 30,
 	      "tab" => 1
 	      ),
 	array(
@@ -114,6 +123,13 @@ $dynamic = array( //array of available options
 	      "label" => "Cookie Domain",
 	      "type" => "str",
 	      "default" => '',
+	      "tab" => 1
+	      ),
+	array(
+	      "name" => "infooter",
+	      "label" => "Append script? Script will be placed in footer instead of <code>head</code> element",
+	      "type" => "bool",
+	      "default" => false,
 	      "tab" => 1
 	      ),
 

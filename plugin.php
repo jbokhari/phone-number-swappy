@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -35,12 +35,12 @@ require_once('lava/class.lava.plugin.core.php');
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	public $prefix = 'pns_';
-	public $ver = '1.0.1';
+	public $ver = '1.0.2';
 	public $option_prefix = 'pns_';
 	public $name = 'pns';
 	public $localize_object = 'PNS';
 	protected $plugin_slug;
-	protected static $instance;
+	private static $instance;
 	protected $templates;
 	public function __construct(){
 		parent::__construct();
@@ -52,6 +52,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		$this->useAdminJs = true;
 		$plugin = plugin_basename(__FILE__); 
 		add_filter("plugin_action_links_$plugin", array($this, 'add_settings_page') );
+		$this->appendJS();
 	}
 	
 	public static function get_instance() {
@@ -109,7 +110,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 
 		        }
 		    // default to non referral if var is unvailable
-		    } else if ( $use_get_var == "true" && isset( $_GET[$get_tracking_var] ) ){
+		    } else if ( $use_get_var == "true" && isset( $_GET[ $get_tracking_var ] ) ){
 		    	$sereferral = true;
 		        $this->set_referral_cookie(true);
 
@@ -120,12 +121,12 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		    }
 		} else {
 		    //otherwise consult the almighty cookie
-		    if ( $_COOKIE[$cookieName] == "true" ){
+		    if ( $_COOKIE[ $cookieName ] == "true" ){
 		        $sereferral = true;
 		    } else {
 		        $sereferral = false;
 		    }
-		    if ( $_COOKIE[$cookieName] == "true" ){
+		    if ( $_COOKIE[ $cookieName ] == "true" ){
 		        $sereferral = true;
 		    } else {
 		        $sereferral = false;
@@ -170,7 +171,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		if ( isset($this->numbers) || ! empty($this->numbers) )
 			return;
 		$phoneNumbers = array();
-		if ($this->is_referral()){
+		if ( $this->is_referral() ){
 		    $phoneNumbers[0] = $this->lava_options["swappyNumber1"]->get_value();
 		    $phoneNumbers[1] = $this->lava_options["swappyNumber2"]->get_value();
 		    $phoneNumbers[2] = $this->lava_options["swappyNumber3"]->get_value();
@@ -191,7 +192,8 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		return $this->numbers[2];
 	}
 	function appendJS(){
-		// echo "TEST!";
+		$infooter = $this->lava_options['infooter']->get_value() == "true" ? true : false;
+		wp_register_script( 'phone_number_swappy_javascript', $this->jsdir . 'frontend.js', array( 'jquery' ), $this->ver, $infooter );
 		//makes sure numbers are set
 		$this->get_numbers();
 		$phoneNumbers = $this->numbers;
@@ -199,36 +201,23 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		$jsTarget1 = $this->lava_options["jsTarget1"]->get_value();
 		$jsTarget2 = $this->lava_options["jsTarget2"]->get_value();
 		$jsTarget3 = $this->lava_options["jsTarget3"]->get_value();
-	 ?>
-	<script>
-		jQuery(document).ready(function($){
 
-			var swappy1 = $("<?php echo $jsTarget1; ?>").html("<?php echo $phoneNumbers[0]; ?>");
-
-			if (swappy1.attr("href") != ""){
-				//in each case we assume if it has an href, it's a tel: link
-				swappy1.attr("href", "tel:<?php echo $phoneNumbers[0]; ?>");
-			}
-
-			var swappy2 = $("<?php echo $jsTarget2; ?>").html("<?php echo $phoneNumbers[1]; ?>");
-
-			if (swappy2.attr("href") != ""){
-				swappy2.attr("href", "tel:<?php echo $phoneNumbers[1]; ?>");
-			}
-
-			var swappy3 = $("<?php echo $jsTarget3; ?>").html("<?php echo $phoneNumbers[2]; ?>");
-
-			if (swappy3.attr("href") != ""){
-				swappy3.attr("href", "tel:<?php echo $phoneNumbers[2]; ?>");
-			}
-
-		});
-	</script>
-	<?php
+		$jsvars = array(
+			"jsTarget1" => $jsTarget1,
+			"jsTarget2" => $jsTarget2,
+			"jsTarget3" => $jsTarget3,
+			"phoneNumbers" => $phoneNumbers
+		);
+		wp_localize_script( 'phone_number_swappy_javascript', $this->localize_object, $jsvars );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enque_phone_number_swappy_javascript' ) );
+		
+	}
+	function enque_phone_number_swappy_javascript(){
+		wp_enqueue_script( 'phone_number_swappy_javascript' );
 	}
 }
-add_action("init", array(PhoneNumberSwappy::get_instance(), "swappy_header_stuff") );
-add_action("wp_head", array(PhoneNumberSwappy::get_instance(), "appendJS") );
-add_shortcode("swappy1", array(PhoneNumberSwappy::get_instance(), "swappyNumber1") );
-add_shortcode("swappy2", array(PhoneNumberSwappy::get_instance(), "swappyNumber2") );
-add_shortcode("swappy3", array(PhoneNumberSwappy::get_instance(), "swappyNumber3") );
+add_action("init", array( PhoneNumberSwappy::get_instance(), "swappy_header_stuff") );
+// add_action("wp_head", array( PhoneNumberSwappy::get_instance(), "appendJS") );
+add_shortcode("swappy1", array( PhoneNumberSwappy::get_instance(), "swappyNumber1") );
+add_shortcode("swappy2", array( PhoneNumberSwappy::get_instance(), "swappyNumber2") );
+add_shortcode("swappy3", array( PhoneNumberSwappy::get_instance(), "swappyNumber3") );
