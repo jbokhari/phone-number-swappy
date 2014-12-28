@@ -10,5 +10,3 @@ Three options for jQuery target can be set. These are meant to be a span id to s
 A cookie is saved tracking referral, the cookie's expiration can also be set (default 7 days).
 
 Phone number swappy is built on lava 22
-
-~Current Version:1.1.0~
