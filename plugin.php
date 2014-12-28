@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.1.0
+ * Version: 1.0.0
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
