@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.0.2
+ * Version: 1.1.0
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -53,7 +53,7 @@ require_once('lava/class.lava.plugin.core.php');
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	public $prefix = 'pns_';
-	public $ver = '1.0.2';
+	public $ver = '1.1.0';
 	public $option_prefix = 'pns_';
 	public $name = 'pns';
 	public $localize_object = 'PNS';
