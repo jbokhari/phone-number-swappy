@@ -140,7 +140,7 @@ if (!class_exists('PhoneNumberSwappyCore')) :
 		    foreach( $plugin_tabs as $tabslug => $values ){
 		    	$label = $values['label'];
 		        $class = ( $tabindex == $current ) ? 'nav-tab-active' : '';
-		        echo "<a class='nav-tab $class' href='options-general.php?page=plugin-options&tab=$tabindex'>$label</a>";
+		        echo "<a class='nav-tab $class' href='options-general.php?page=phone-number-swappy&tab=$tabindex'>$label</a>";
 		        $tabindex++;
 		    }
 		    echo '</h2>';

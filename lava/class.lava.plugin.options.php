@@ -147,6 +147,10 @@ abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
 			$this->_log("No current value for $this->name, getting option $this->id from database.");
 			$value = get_option($this->id, $default);
 			$this->value = $this->output_filter($value);
+			$this->_log("Retreived value {$this->value} from database.");
+			// ob_start();
+			// var_dump(expression)
+			// ob_get_clean();
 		}
 		return $this->value;
 	}
@@ -180,6 +184,8 @@ abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
 		if ( $newValue == "" && $this->is_required() )
 			return false;
 		$return = update_option($this->id, $newValue);
+		$this->value = $newValue;
+		$this->_log("The \$newValue value was set to object.");
 		if ($return)
 			$this->_log("Value was successfully stored.");
 		else
