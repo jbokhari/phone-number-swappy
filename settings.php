@@ -1,5 +1,5 @@
-<?php if ( ! defined( "ECT_RELATED_CONTENT_PATH" ) ) {
-  wp_die();
+<?php if ( ! defined( "ABSPATH" ) ) {
+  die();
 }
 
 $dynamic = array( //array of available options
@@ -14,6 +14,24 @@ $dynamic = array( //array of available options
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
+	// array(
+	// 	"name" => "phone_numbers",
+	// 	"label" => "Phone Numbers",
+	// 	"type" => "repeater",
+	// 	"in_menu" => true,
+	// 	"fields" => array(
+	// 		array(
+	// 		 	"name" => "default_number",
+	// 		 	"label" => "Default Phone #",
+	// 		 	"type" => "str"
+	// 		),
+	// 		array(
+	// 		 	"name" => "replacement_number",
+	// 		 	"label" => "Referral Phone #",
+	// 		 	"type" => "str"
+	// 		)
+	// 	)
+	// ),
   	array(
 	      "name" => "swappyNumber1",
 	      "label" => "Referral Phone Number 1 (Twilio)",
@@ -76,12 +94,30 @@ $dynamic = array( //array of available options
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
+	/**
+	 * @since 1.1.3
+	 * Replaces old bool value with three different options
+	 */
 	array(
 	      "name" => "use_get_var",
-	      "label" => "Use Get Var",
+	      "label" => "Referral Tracking",
 	      "description" => "Use Get Value instead of search engine referral?",
-	      "type" => "bool",
-	      "default" => false,
+	      "type" => "array",
+	      "ui" => "radio",
+	      "choices" => array(
+	      	array(
+	      		"label" => "Track search engine traffic only (default)",
+	      		"value" => "search"
+	      		),
+	      	array( 
+	      		"label" => "Track url with GET var only",
+	      		"value" => "getvar"
+	      		),
+	      	array(
+	      		"label" => "Track both: GET var and search engine traffic",
+	      		"value" => "both"
+	      		)
+	      	),
 	      "tab" => 0
 	      ),
 	array(

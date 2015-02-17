@@ -1,3 +1,6 @@
 jQuery(document).ready(function($){
-	$('input.rgbacolorpicker').rgbacolorpicker();
+	$('input.colorpicker-rgba-ui').rgbacolorpicker({
+		// force_rgba: true,
+		alpha: true
+	});
 });

@@ -8,14 +8,14 @@
  * @license GPL2
  * Last updated 7/20/2014
  */
-final class SwappyOptionarray extends SwappyOption {
+final class SwappyOption_array extends SwappyOption {
 	public function init_tasks($options){
 		//backwards compaitibility, or to level confusiion over settings
 		if ( ! isset( $options['choices'] ) )
 			if ( isset( $options['values'] ) )
 				$this->choices = $options['values'];
 			else 
-				$this->_error("Lava option with array type needs choices specified. None were set.");
+				$this->logger->_error("Lava option with array type needs choices specified. None were set.");
 		else
 			$this->choices = $options['choices'];
 		$this->ui = "select"; // default ui is select
@@ -31,14 +31,15 @@ final class SwappyOptionarray extends SwappyOption {
 		}
 	}
 	public function selected_html($choice){
-		if ( in_array( $choice, $this->get_value() ) ) {
+
+		if ( is_array( $this->get_value() ) && in_array( $choice, $this->get_value() ) ) {
 			return "selected='selected'";
 		} else {	
 			return "";
 		}
 	}
 	public function checked_html($choice){
-		if ( in_array( $choice, $this->get_value() ) ){
+		if ( is_array( $this->get_value() ) && in_array( $choice, $this->get_value() ) ){
 			return "checked='checked'";
 		} else {	
 			return "";
@@ -70,7 +71,7 @@ final class SwappyOptionarray extends SwappyOption {
 	// }
 	public function output_filter($value){
 		if ($value){
-			return unserialize($value);
+			return maybe_unserialize($value);
 		} else {
 			return array();
 		}
@@ -83,11 +84,13 @@ final class SwappyOptionarray extends SwappyOption {
 		$id = $this->id;
 		$html = "";
 		$multiple = "";
+		// print_r($this->get_value());
+		// var_dump($this->choices);
 		switch($this->ui) {
 			case "multiple" :
 				$multiple = $this->multiple_html();
 			case "select" :
-				$html .= "<select id='{$id}' class='{$classes}' {$multiple} {$required} type='url' name='{$id}[]'>";
+				$html .= "<select id='{$id}' class='{$classes}' {$multiple} {$required} type='url' name='{$name}[]'>";
 				foreach ($this->choices as $c){
 					$val = $c["value"];
 					$label = $c["label"];
@@ -103,8 +106,10 @@ final class SwappyOptionarray extends SwappyOption {
 					$label = $c["label"];
 					$checked = $this->checked_html($val);
 					$choiceID = $this->id . "-" . $this->get_choice_slug($label);
+					$html .= '<div class="checkbox-set">';
+					$html .= "<input id='{$choiceID}' {$checked} type='checkbox' name='{$name}[]' value='{$val}' />";
 					$html .= "<label for='{$choiceID}'>$label</label>";
-					$html .= "<input id='{$choiceID}' {$checked} type='checkbox' name='{$id}[]' value='{$val}' />";
+					$html .= '</div>';
 				}
 				$html .= "</div>";
 				break;
@@ -116,7 +121,7 @@ final class SwappyOptionarray extends SwappyOption {
 					$checked = $this->checked_html($val);
 					$choiceID = $this->id . "-" . $this->get_choice_slug($label);
 					$html .= "<label for='{$choiceID}'>$label</label>";
-					$html .= "<input id='{$choiceID}' {$checked} type='radio' name='{$id}[]' value='{$val}' />";
+					$html .= "<input id='{$choiceID}' {$checked} type='radio' name='{$name}[]' value='{$val}' />";
 				}
 				$html .= "</div>";
 				break;
@@ -151,11 +156,11 @@ final class SwappyOptionarray extends SwappyOption {
 			} else {
 				// just use the first option.
 				$confirmedValues[] = $newValue[0]; 
-				$this->_log("The array type LavaOption $this->name received multiple values to save the ui should not allow it. Refferring to first option instead, but this could represent a problem or the form was submitted falsely.");
+				$this->logger->_log("The array type LavaOption $this->name received multiple values to save the ui should not allow it. Refferring to first option instead, but this could represent a problem or the form was submitted falsely.");
 			}
 		} else {
 			$valid = false;
-			$this->_log("The array type LavaOption $this->name received something other than an array when validating. This is an error with the plugin and should not happen.");
+			$this->logger->_log("The array type LavaOption $this->name received something other than an array when validating. This is an error with the plugin and should not happen.");
 			$newValue = strval($newValue);
 			if ( $this->is_valid_choice_value($newValue) )
 				$confirmedValues = $newValue;

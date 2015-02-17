@@ -1,22 +1,18 @@
 <?php
-final class SwappyOptionint extends SwappyOption {
+class SwappyOption_int extends SwappyOption {
 
 	public $rules = array();
-
-	public function __construct($prefix, array $options, $no){
-		parent::__construct($prefix, $options, $no);
-		$this->int_init($options);
-	}
-	public function int_init($options){
+	
+	public function init_tasks($options){
 		if ( isset($options['rules']) ){
 			if ( isset( $options['rules']['min'] ) ){
-				$this->rules['min'] = intval( $options['rules']['min'] );
+				$this->rules['min'] = floatval( $options['rules']['min'] );
 			}
 			if ( isset( $options['rules']['max'] ) ){
-				$this->rules['max'] = intval( $options['rules']['max'] );
+				$this->rules['max'] = floatval( $options['rules']['max'] );
 			}
 			if ( isset( $options['rules']['step'] ) ){
-				$this->rules['step'] = intval( $options['rules']['step'] );
+				$this->rules['step'] = floatval( $options['rules']['step'] );
 			}
 		}
 	}
@@ -51,10 +47,10 @@ final class SwappyOptionint extends SwappyOption {
 		$step = $this->generate_step_value_html();
 		$name = $this->name;
 		$id = $this->id;
-		return "<input id='{$id}' class='{$classes}' {$required} type='number' $max $min $step name='{$id}' value='{$value}' />";
+		return "<input id='{$id}' class='{$classes}' {$required} type='number' $max $min $step name='{$name}' value='{$value}' />";
 	}
 	public function validate($newValue = ""){
-		$value = intval( $newValue );
+		$value = floatval( $newValue );
 		if (!empty($this->rules)){
 			if ( isset($this->rules['min'] ) ){
 				if ( $newValue < $this->rules['min'] ){
@@ -74,5 +70,8 @@ final class SwappyOptionint extends SwappyOption {
 			}
 		}
 		return $value;
+	}
+	public function output_filter( $output ){
+		return $output;
 	}
 }

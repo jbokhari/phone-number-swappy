@@ -1,3 +1,29 @@
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
 .pns_options-page .option-block label {
 	width: 200px;
 	display: inline-block;
@@ -21,7 +47,31 @@
 .pns_options-page .option-block:nth-child(9) {
 	margin-bottom: 45px;
 }
-
+.repeater-list .row-fields .repeater-col {
+	width: 200px;
+	float: left;
+}
+.repeater-list .row-fields .repeater-col input {
+	margin: 0;
+	width: 190px;
+	display: inline-block;
+}
+.pns_options-page label {
+	font-weight: bold;
+}
+.repeater-head label {
+	font-style: italic;
+	font-weight: normal;
+}
+.radios label {
+	font-weight: normal;
+}
+.radios label:nth-child(n+2) {
+	margin-left: 20px;
+}
+.exout {
+	cursor: pointer;
+}
 /*! jQuery UI - v1.11.0 - 2014-07-15
 * http://jqueryui.com
 * Includes: core.css, autocomplete.css, menu.css

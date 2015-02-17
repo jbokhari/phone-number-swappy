@@ -1,18 +1,18 @@
 <?php
-final class SwappyOptionsortable extends SwappyOption {
+final class SwappyOption_sortable extends SwappyOption {
 	public function init_tasks($options){
 		if ( isset( $options['sortable']) ){
 			$this->sortable = $options['sortable'];
 		}
 		$this->add_class("lava-sortable");
 	}
-	public function get_single_instance_footer_scripts(){
-		if ( $this->ui == "rgba" && empty(self::$single_instance_scripts[$this->ui]) ){
-			self::$single_instance_scripts[$this->ui] = true;
-			return "jQuery('input.rgbacolorpicker').rgbacolorpicker();";
-		}
-		return false; //default return false
-	}
+	// public function get_single_instance_footer_scripts(){
+	// 	if ( $this->ui == "rgba" && empty(self::$single_instance_scripts[$this->ui]) ){
+	// 		self::$single_instance_scripts[$this->ui] = true;
+	// 		return "jQuery('input.rgbacolorpicker').rgbacolorpicker();";
+	// 	}
+	// 	return false; //default return false
+	// }
 	public function get_option_field_html(){
 		$fieldhtml = '';
 		$classes = $this->input_classes();
@@ -58,14 +58,13 @@ final class SwappyOptionsortable extends SwappyOption {
 		// print_r($items);
 		foreach ($items as $id){
 			$currentpost = $sortposts[$indices[$id]];
-			$status = ($currentpost['status'] !== "publish") ? " <span class=
-		'status'>&#8212;{$currentpost['status']}</span>" : '';
+			$status = ($currentpost['status'] !== "publish") ? " <span class='status'>&#8212;{$currentpost['status']}</span>" : '';
 			$fieldhtml .= '<li data-order="'.$indices[$id].'" data-id="'.$currentpost['id'].'" class="post-' . $currentpost['id'] . '">' . $currentpost['title'] . $status . '<div class="viewpost"><a href="'.admin_url("post.php").'?action=edit&post='.$currentpost['id'].'">edit</a></div><div class="exout">delete</div></li>';
 		}
 
 		$fieldhtml .= '</ul>';
 		$fieldhtml .= '<div id="sortable-order-' . $this->fieldnumber . '">';
-		$fieldhtml .= '<input type="hidden" name="'.$this->id.'" value="'.$value.'">';
+		$fieldhtml .= '<input type="hidden" name="'.$this->name.'" value="'.$value.'">';
 		$fieldhtml .= '</div>';
 		ob_start();
 		?>

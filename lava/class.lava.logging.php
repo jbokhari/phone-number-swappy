@@ -6,11 +6,16 @@
  * @author Jameel Bokhari
  * @license GPL22
  */
-abstract class PhoneNumberSwappyLogErrorClass {
+
+class SwappyLogging implements SwappyLogger {
+	public $id;
 	public $error = array();
 	public $log = array();
+	public function __construct($id = "Unknown Object"){
+		$this->id = $id;
+	}
 	public function display_logs( $echo = true, $verbose = false ){
-		$html  = "<h3>Logs [$this->name]:</h3>";
+		$html  = "<h3>Logs [$this->id]:</h3>";
 		$html .= "<ul>";
 		foreach($this->log as $log){
 			$html .= "<li>$log</li>";

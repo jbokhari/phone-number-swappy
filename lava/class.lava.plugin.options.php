@@ -1,81 +1,123 @@
 <?php
 /**
- * SwappyOption basic elements of individual lava options. Contains two abstract methods
- * @abstract validate() converts new information to db safe value
- * @abstract get_option_field_html() generates html field for admin page
+ * LavaOption basic elements of individual lava options. Contains two abstract methods
  * @package Lava
- * @version 2.2
  * @author Jameel Bokhari
  * @license GPL22
  */
-abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
+abstract class SwappyOption {
+	public $logging;
 	public $name;
 	public $label;
 	public $id;
-	public $value;
-	public $type = "str";
+	public $value = null;
+	public $type = "";
 	public $ui = "default";
 	public $default = "";
 	public $in_menu = "true";
 	public $required = false;
 	public $classes = array();
+	public $container_classes = array();
 	public $label_classes = array();
+	public $optionals = array();
 	public $in_js = false;
 	public $tab = 0;
-	public static $single_instance_scripts = array();
+	public $post_id = null;
 	protected $invalid = true;
-	function __construct($prefix, array $options, $no = 0){
-		// print_r($options);
-		$this->_log("Instantiated");
+	function __construct($prefix, array $options, $no = 0, $scriptmgmt, $jsvars){
+		$this->jsvars = $jsvars;
+		$this->scriptmgmt = $scriptmgmt;
 		$this->prefix = $prefix;
+		$this->logger = $this->generate_logging_object();
+
 		if ( isset( $options['name'] ) ){
 			$this->name = $options['name'];
 		} else {
-			$this->_error("<code>Name</code> field not set for option {$this->name}. The label field and name are required.");
+			$this->logger->_error("<code>Name</code> field not set for option {$this->name}. The label field and name are required.");
+		}
+
+		if ( isset( $options['condition'] ) ){
+			$this->condition = $options['condition'];
+		}
+		if ( isset( $options['in_js'] ) ){
+			$this->in_js = $options['in_js'];
 		}
 		if ( isset( $options['label'] ) ){
 			$this->label = $options['label'];
 		} else {
-			$this->_error("<code>Label</code> field not set for option {$this->name}. The label field and name are required.");
+			$this->logger->_error("<code>Label</code> field not set for option {$this->name}. The label field and name are required.");
 		} 
+
+		$this->meta_box = isset( $options['meta_box'] ) ? $options['meta_box'] : false;
+
+		$this->type = $options['type'];
 		$this->classes[] = "field-" . $no;
 		$this->fieldnumber = $no;
 		//for repeater fields
-		if ( isset($options['id'] ) && !empty( $options['id'] ) )
-			$this->id = $options['id'];
+		if ( isset( $options['id'] ) && !empty( $options['id'] ) )
+			$this->id = strtolower( $options['id'] );
 		else
-			$this->id = $options['id'] = $this->prefix . $options['name'];
+			$this->id = $options['id'] = strtolower( $this->prefix . $options['name'] );
+		$this->ui = isset( $options['ui'] ) ? $options['ui'] : "default";
+		$this->default_actions($options);
+	}
+	protected function default_actions($options){
+		$this->register_optionals();
 		$this->default_optionals($options);
+		$this->register_needed_scripts();
 		$this->init_tasks($options);
-		$script = $this->get_single_instance_footer_scripts();
-		// var_dump($script);
-		if ($script)
-			PhoneNumberSwappyCore::set_si_footer_scripts($script);
+		$this->add_container_class("{$this->type}-field");
+		if ( isset( $this->in_js ) && $this->in_js ){
+			$this->jsvars->add_value( $this->id, $this->get_value() );
+		}
+		if ( isset( $this->condition ) && !empty($this->condition) ){
+			$this->register_conditional_variables($this->id, $this->condition);
+		}
+	}
+	public function register_conditional_variables($id, $condition){
+		$this->jsvars->add_conditional($id, $condition);
+	}
+	public function generate_logging_object(){
+		return new SwappyLogging($this->name);
 	}
 	/**
-	 * Not required. Simple helper function to run after base tasks are complete (creating the option)
+	 * Simple helper function to run after base tasks are complete (creating the option).
 	 * @param type $options 
 	 * @return type
 	 */
-	protected function init_tasks($options){}
+	abstract protected function init_tasks($options);
 	/**
 	 * Adds single input to the label_classes array, or merges array items.
 	 * @param array or string $class 
 	 * @return void
 	 */
+	public function add_container_class($class){
+		$this->add_class($class, "container_classes");
+	}
 	public function add_label_class($class){
 		$this->add_class($class, "label_classes");
 	}
-	public function add_outer_class($class){}
-	public function input_classes($ref = "classes"){
+	public function add_outer_class($class){
+		$this->add_class($class, "outer_classes");
+	}
+	public function input_classes(){
+		return $this->get_classes_list("classes");
+	}
+	public function get_classes_list($ref = "classes"){
 		$classes = implode( " ", $this->$ref );
-		$classes = sanitize_html_class( $classes );
+		// $classes = sanitize_html_class( $classes );
 		return $classes;
 	}
 	public function add_class($class, $ref = "classes"){
-		if (is_array($class))
-			$this->$this->$ref = array_merge($this->$this->$ref, $class);
-		else array_push($this->$ref, $class);
+		if (is_array($class)){
+			$this->$ref = array_merge($this->$ref, $class);
+			return;
+		}
+		if ( !isset($this->$ref) ){
+			$this->$ref = array();
+		}
+		array_push($this->$ref, $class);
+		return;
 	}
 	/**
 	 * Generates and returns option label html
@@ -88,20 +130,26 @@ abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
 		$html .= "<label class='$classes' for='{$this->id}'>{$this->label}{$required}</label>";
 		return $html;
 	}
-
 	/**
 	 * Alias of add_label_class Gets html ready list of label classes, separated by spaces
 	 * @return string
 	 */
+	public function get_outer_class(){
+		return $this->get_classes_list("outer_classes");
+	}
 	public function get_label_html_classes(){
-		return $this->input_classes("label_classes");
+		return $this->get_classes_list("label_classes");
+	}
+	public function get_container_html_classes(){
+		return $this->get_classes_list("container_classes");
 	}
 
 	public function get_form_js(){
 		return "";
 	}
 	final public function get_option_header_html(){
-		return "<div id='{$this->id}-container' class='option-block field-{$this->fieldnumber}'>";
+		$classes = $this->get_container_html_classes();
+		return "<div id='{$this->id}-container' class='option-block field-{$this->fieldnumber} $classes'>";
 	}
 	final public function get_option_footer_html(){
 		$return = $this->get_form_js();
@@ -113,12 +161,18 @@ abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
 	 * Used by LavaPlugin class to queue JavaScript to be appended to the options page when this option is loaded. These scripts are defined in this function when a script is needed to be run only one time for no matter how many options of this type are created.
 	 * @return (string)
 	 */
-	public function get_single_instance_footer_scripts(){}
-	final private function delete_value(){
+	private function delete_value(){
 		return delete_option( $this->id );
 	}
+	/**
+	 * 
+	 * Register optionals
+	 *
+	 **/
+	public function register_optionals(){
+		return array();
+	}
 	public function default_optionals($options){
-		$this->_log("Run default_optionals()");
 		if ( isset( $options['type'] ) )
 			$this->type = $options['type'];
 		if ( isset( $options['default'] ) )
@@ -137,20 +191,27 @@ abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
 			$this->tab = $options['tab'];
 		if ( isset( $options['required'] ) )
 			$this->required = $options['required'];
-	}
-	final public function get_value($default = null){
-		if ($default === null){
-			$this->_log("No default value provided for $this->name when running get_value(), internal default ($this->default) was used instead.");
-			$default = $this->default;
+		$this->description = isset( $options['description'] ) ? $options['description'] : "";
+		foreach($this->optionals as $o){
+			if ( isset( $options[$o] ) ){
+				$this->$o = $options[ $o ];
+			}
 		}
-		if( ! $this->value){
-			$this->_log("No current value for $this->name, getting option $this->id from database.");
-			$value = get_option($this->id, $default);
+	}
+	public function get_value($default = null, $refresh = false){
+		if ($default === null)
+			$default = $this->default;
+		if( $this->value === null || $refresh ){
+			if ( $this->meta_box && $this->post_id > 0 ){
+				// echo "Start get value of $this->id for post id $this->post_id";
+				$value = get_post_meta( $this->post_id , $this->id, true );
+				// var_dump($this->post_id);
+				// var_dump($value);
+			} else {
+				$value = get_option($this->id, $default);
+			}
+			
 			$this->value = $this->output_filter($value);
-			$this->_log("Retreived value {$this->value} from database.");
-			// ob_start();
-			// var_dump(expression)
-			// ob_get_clean();
 		}
 		return $this->value;
 	}
@@ -159,13 +220,9 @@ abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
 	 * @param type $input 
 	 * @return type
 	 */
-	public function output_filter($input){
-		return $input;
-	}
+	abstract public function output_filter($input);
 	public function is_required(){
 		if ($this->required){
-			$this->_error("set_value() could not be performed on {$this->name} because it is required and the value was empty after validation.");
-			$this->invalidate();
 			return true;
 		} else {
 			return false;
@@ -179,23 +236,51 @@ abstract class SwappyOption extends PhoneNumberSwappyLogErrorClass {
 		$this->add_class('invalid');
 	}
 	public function set_value($newValue = ""){
+		$this->logger->_log("set_value() was run.");
 		$newValue = $this->validate($newValue);
-		$this->_log("Function set_value() was run for $this->name using $newValue (after validation.");
-		if ( $newValue == "" && $this->is_required() )
+		if ( $newValue == "" && $this->is_required() ){
+			$this->invalidate();
 			return false;
-		$return = update_option($this->id, $newValue);
-		$this->value = $newValue;
-		$this->_log("The \$newValue value was set to object.");
-		if ($return)
-			$this->_log("Value was successfully stored.");
-		else
-			$this->_log("Value was not stored!!!");
-		return $return;
+		}
+		// $newValue = $this->output_filter($newValue); //not sure why this was here???
+		$this->value = $this->output_filter( $newValue );
+		if ( $this->meta_box && $this->post_id > 0 ){
+			return update_post_meta( $this->post_id, $this->id, $newValue );
+		}
+		$update = update_option($this->id, $newValue);
+		// var_dump( $update );
+		return $update;
+	}
+	public function get_option_description_html($usewrapper = true){
+		$html = "";
+		if ( $this->description == "" ){
+			return "";
+		}
+		if ($usewrapper){
+			$html .= '<p class="description">';
+		}
+		
+		$html .= $this->description;
+
+		if ($usewrapper){
+			$html .= '</p>';
+		}
+		return $html;
 	}
 	protected function required_html(){
 		return $this->required ? 
 			"required='required'" :
 			"";
+	}
+	public function register_needed_scripts(){
+		return false;
+	}
+	/**
+	 * set post_id for meta field items
+	 **/
+	public function set_post_id( $post_id ){
+		$this->value = null;
+		$this->post_id = "$post_id";
 	}
 	abstract public function validate($newValue = "");
 	abstract public function get_option_field_html();

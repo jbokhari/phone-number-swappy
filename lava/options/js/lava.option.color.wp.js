@@ -1,3 +1,10 @@
 jQuery(document).ready(function($){
-	$('.wp-colorpicker-ui').wpColorPicker();
+	var options = {
+		defaultColor: false,
+		change : function(){},
+		clear: function(){},
+		hide: true,
+		palettes: {}
+	}
+	$('.colorpicker-wp-ui').wpColorPicker(options);
 });
