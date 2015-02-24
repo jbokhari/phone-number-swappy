@@ -41,7 +41,9 @@ class SwappyOption_repeater extends SwappyOption {
 	 * @return void
 	 */
 	public function output_filter($output){
-		$values = unserialize( $output );
+		// var_dump($output);
+		$values = maybe_unserialize( $output );
+		// var_dump($values);
 		if ( isset( $values['__meta_rows'] ) && !empty( $values['__meta_rows'] ) ){
 			$this->rows = $values['__meta_rows'];
 		} else {
@@ -120,6 +122,7 @@ class SwappyOption_repeater extends SwappyOption {
 		return $html;
 	}
 	public function validate($newValue = ""){
+		var_dump($newValue);
 		$rows = $newValue["__meta_rows"];
 		$fixedNewValue = array();
 		// var_dump($newValue);
@@ -132,8 +135,8 @@ class SwappyOption_repeater extends SwappyOption {
 			}
 		}
 		$fixedNewValue["__meta_rows"] = $rows;
+		var_dump($fixedNewValue);
 		$newValue = serialize($fixedNewValue);
-		// var_dump($newValue);
 		return $newValue;
 	}
 	public function register_needed_scripts(){

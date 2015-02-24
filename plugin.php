@@ -172,7 +172,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	        	return true;
 	        }
 	    }
-	    
+
 	    if ( ( $use_get_var[0] == "getvar" || $use_get_var[0] == "both" ) && isset( $_GET[ $get_tracking_var ] ) ){
 	        $this->set_referral_cookie(true);
 	        return true;
@@ -319,76 +319,78 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
  * @since 1.1.3
  */
 function upgrade_phone_number_swappy_1_1_3() {
-	global $pns;
-	if ( ! get_option( "PhoneNumberSwappyVersion" ) ) {
-		update_option( "PhoneNumberSwappyVersion", PhoneNumberSwappy::$ver );
-		if ( get_option( "pns_use_get_var" ) == "true" ){
-			update_option( "pns_use_get_var", array( "getvar" ) );
-		} else {
-			update_option( "pns_use_get_var", array( "search" ) );
-		}
-		
-		$newnumbers = array(
-			"default_number" => array(),
-			"replacement_number" => array(),
-			"js_target" => array(),
-			"notes" => array()
-			);
+	// try{
+		// if ( ! get_option( "pns_phoneNumberSwappyVersion" ) ) {
+			update_option( "pns_phoneNumberSwappyVersion", PhoneNumberSwappy::$ver );
+			if ( get_option( "pns_use_get_var" ) == "true" ){
+				update_option( "pns_use_get_var", array( "getvar" ) );
+			} else {
+				update_option( "pns_use_get_var", array( "search" ) );
+			}
+			
 
-		$pns_phoneNumber1 = get_option( "pns_phoneNumber1" );
-		$pns_swappyNumber1 = get_option( "pns_swappyNumber1" );
-		$pns_jstarget1 = get_option( "pns_jstarget1" );
-		$pns_phoneNumber2 = get_option( "pns_phoneNumber2" );
-		$pns_swappyNumber2 = get_option( "pns_swappyNumber2" );
-		$pns_jstarget2 = get_option( "pns_jstarget2" );
-		$pns_phoneNumber3 = get_option( "pns_phoneNumber3" );
-		$pns_swappyNumber3 = get_option( "pns_swappyNumber3" );
-		$pns_jstarget3 = get_option( "pns_jstarget3" );
+			$pns_phoneNumber1 = get_option( "pns_phoneNumber1" );
+			$pns_swappyNumber1 = get_option( "pns_swappyNumber1" );
+			$pns_jstarget1 = get_option( "pns_jstarget1" );
+			$pns_phoneNumber2 = get_option( "pns_phoneNumber2" );
+			$pns_swappyNumber2 = get_option( "pns_swappyNumber2" );
+			$pns_jstarget2 = get_option( "pns_jstarget2" );
+			$pns_phoneNumber3 = get_option( "pns_phoneNumber3" );
+			$pns_swappyNumber3 = get_option( "pns_swappyNumber3" );
+			$pns_jstarget3 = get_option( "pns_jstarget3" );
 
 
-		$_meta_rows = 0;
+			$_meta_rows = 0;
+			
+			$newnumbers = array(
+				"default_number" => array(),
+				"replacement_number" => array(),
+				"js_target" => array(),
+				"notes" => array()
+				);
+			if ( $pns_phoneNumber1 || $pns_swappyNumber1 ){
+				$newnumbers["default_number"][] = $pns_phoneNumber1 ? $pns_phoneNumber1 : "";
+				$newnumbers["replacement_number"][] = $pns_swappyNumber1 ? $pns_swappyNumber1 : "";
+				$newnumbers["js_target"][] = $pns_jstarget1 ? $pns_jstarget1 : "";
+				$newnumbers["notes"][] = 'Phone Number 1';
+				$_meta_rows++;
+			}
+			if ( $pns_phoneNumber2 || $pns_swappyNumber2 ){
+				$newnumbers["default_number"][] = $pns_phoneNumber2 ? $pns_phoneNumber2  : "" ;
+				$newnumbers["replacement_number"][] = $pns_swappyNumber2 ? $pns_swappyNumber2  : "" ;
+				$newnumbers["js_target"][] = $pns_jstarget2 ? $pns_jstarget2  : "" ;
+				$newnumbers["notes"][] = 'Phone Number 2';
+				$_meta_rows++;
+			}
+			if ( $pns_phoneNumber3 || $pns_swappyNumber3 ){
+				$newnumbers["default_number"][] = $pns_phoneNumber3 ? $pns_phoneNumber3 : "";
+				$newnumbers["replacement_number"][] = $pns_swappyNumber3 ? $pns_swappyNumber3 : "";
+				$newnumbers["js_target"][] = $pns_jstarget3 ? $pns_jstarget3 : "";
+				$newnumbers["notes"][] = 'Phone Number 3';
+				$_meta_rows++;
+			}
+			$newnumbers[ '__meta_rows' ] = $_meta_rows;
 
-		if ( $pns_phoneNumber1 || $pns_swappyNumber1 ){
-			$newnumbers["default_number"][] = $pns_phoneNumber1 ? $pns_phoneNumber1 : "";
-			$newnumbers["replacement_number"][] = $pns_swappyNumber1 ? $pns_swappyNumber1 : "";
-			$newnumbers["js_target"][] = $pns_jstarget1 ? $pns_jstarget1 : "";
-			$newnumbers["notes"][] = 'Phone Number 1';
-			$_meta_rows++;
-		}
-		if ( $pns_phoneNumber2 || $pns_swappyNumber2 ){
-			$newnumbers["default_number"][] = $pns_phoneNumber2 ? $pns_phoneNumber2  : "" ;
-			$newnumbers["replacement_number"][] = $pns_swappyNumber2 ? $pns_swappyNumber2  : "" ;
-			$newnumbers["js_target"][] = $pns_jstarget2 ? $pns_jstarget2  : "" ;
-			$newnumbers["notes"][] = 'Phone Number 2';
-			$_meta_rows++;
-		}
-		if ( $pns_phoneNumber3 || $pns_swappyNumber3 ){
-			$newnumbers["default_number"][] = $pns_phoneNumber3 ? $pns_phoneNumber3 : "";
-			$newnumbers["replacement_number"][] = $pns_swappyNumber3 ? $pns_swappyNumber3 : "";
-			$newnumbers["js_target"][] = $pns_jstarget3 ? $pns_jstarget3 : "";
-			$newnumbers["notes"][] = 'Phone Number 3';
-			$_meta_rows++;
-		}
-		$newnumbers[ '__meta_rows' ] = $_meta_rows;
-		// var_dump( $newnumbers );
-		// var_dump( $pns->options[ 'phone_numbers' ]->get_value() );
-		if ( $pns->options['phone_numbers']->set_value($newnumbers) ){
-			delete_option( "pns_phoneNumber1" );
-			delete_option( "pns_swappyNumber1" );
-			delete_option( "pns_jstarget1" );
-			delete_option( "pns_phoneNumber2" );
-			delete_option( "pns_swappyNumber2" );
-			delete_option( "pns_jstarget2" );
-			delete_option( "pns_phoneNumber3" );
-			delete_option( "pns_swappyNumber3" );
-			delete_option( "pns_jstarget3" );
-		} else {
-			wp_die("Phone Number Swappy failed to upgrade. Try reverting to previous working version of plugin. Sorry :'(");
-		}
-
-	}
+			// $newnumbers = ;
+			// var_dump($newnumbers);
+			$newnumbers = serialize($newnumbers);
+			var_dump($newnumbers);
+			// update_option( "pns_phone_numbers", $newnumbers );
+			// delete_option( "pns_phoneNumber1" );
+			// delete_option( "pns_swappyNumber1" );
+			// delete_option( "pns_jstarget1" );
+			// delete_option( "pns_phoneNumber2" );
+			// delete_option( "pns_swappyNumber2" );
+			// delete_option( "pns_jstarget2" );
+			// delete_option( "pns_phoneNumber3" );
+			// delete_option( "pns_swappyNumber3" );
+			// delete_option( "pns_jstarget3" );
+		// }
+	// } catch (Exception $e) {
+	// }
 }
-register_activation_hook( __FILE__, 'upgrade_phone_number_swappy_1_1_3' );
+// register_activation_hook( __FILE__, 'upgrade_phone_number_swappy_1_1_3' );
+add_action( 'plugins_loaded', "upgrade_phone_number_swappy_1_1_3" );
 
 $optionfactory = new SwappyFactory();
 $loggingobject = new SwappyLogging( PhoneNumberSwappy::$name );
@@ -396,6 +398,9 @@ $notifierobject = new SwappyNotifier( PhoneNumberSwappy::$prefix );
 $scriptmgmt = new SwappyScriptManagerDefault();
 $metabox = new SwappyMetaBoxFactory();
 $pns = new PhoneNumberSwappy($optionfactory, $loggingobject, $notifierobject, $scriptmgmt, $metabox);
+
+// print_r(get_option("pns_phone_numbers"));
+var_dump(get_option("pns_phone_numbers"));
 
 add_action("init", array( $pns, "swappy_header_stuff") );
 add_action("wp_head", array( $pns, "appendJS") );

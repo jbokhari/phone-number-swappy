@@ -7,6 +7,12 @@ $dynamic = array( //array of available options
 	/**************************************
 	::::::::::::::::EXTERNAL:::::::::::::::
 	**************************************/
+	/**
+	 * @since 1.1.3
+	 * Used in lieu of old string values
+	 * Replacement for phoneNumber1, swappyNumber1, jsTarget1, phoneNumber2, ..., jsTarget3
+	 * Now one repeater, also has note field for internal use
+	 */
 	array(
 		"name" => "phone_numbers",
 		"label" => "Phone Numbers",
@@ -36,77 +42,6 @@ $dynamic = array( //array of available options
 			)
 		)
 	),
-  	/*
-	array(
-	      "name" => "phoneNumber1",
-	      "label" => "Default Phone Number 1",
-	      "type" => "str",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-  	array(
-	      "name" => "swappyNumber1",
-	      "label" => "Referral Phone Number 1 (Twilio)",
-	      "type" => "str",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	array(
-	      "name" => "phoneNumber2",
-	      "label" => "Default Phone Number 2",
-	      "type" => "str",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	array(
-	      "name" => "swappyNumber2",
-	      "label" => "Referral Phone Number 2 (Twilio)",
-	      "type" => "str",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	array(
-	      "name" => "phoneNumber3",
-	      "label" => "Default Phone Number 3",
-	      "type" => "str",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	array(
-	      "name" => "swappyNumber3",
-	      "label" => "Referral Phone Number 3 (Twilio)",
-	      "type" => "str",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	array(
-	      "name" => "jsTarget1",
-	      "label" => "Javascript Target 1",
-	      "description" => "Span ID for first phone number",
-	      "type" => "str",
-	      "default" => ".phone-swap-1",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	array(
-	      "name" => "jsTarget2",
-	      "label" => "Javascript Target 2",
-	      "description" => "Span ID for first phone number",
-	      "type" => "str",
-	      "default" => ".phone-swap-2",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	array(
-	      "name" => "jsTarget3",
-	      "label" => "Javascript Target 3",
-	      "description" => "Span ID for first phone number",
-	      "type" => "str",
-	      "default" => ".phone-swap-3",
-	      "tab" => 0,
-	      "in_js" => true
-	      ),
-	*/
 	/**
 	 * @since 1.1.3
 	 * Replaces old bool value with three different options
