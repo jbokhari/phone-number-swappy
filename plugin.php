@@ -124,9 +124,8 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		 */
 		// $phoneNumbers;
 		//if cookie is not set
-		$cookieName = $this->prefix . "referral";
-		$use_get_var = $this->options['use_get_var']->get_value();
-		$get_tracking_var = $this->options['get_tracking_var']->get_value();
+		$cookieName = self::$prefix . "referral";		
+		
 		$swappy_reset_link = $this->options['swappy_reset_link']->get_value();
 		
 		
@@ -135,35 +134,10 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 			return;
 		}
 
-		/**
-		 * TODO FIX THIS LOGIC TO INCORP BOTH, GETVAR OR SEARCH ENGINE TRAFFIC
-		 */
 		if ( ! isset( $_COOKIE[$cookieName] ) ){
 
-		    if( isset( $_SERVER['HTTP_REFERER']) ) {
-		        // if so parse url...
-		        $ref = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-		        // and check if referral from google, yahoo, bing
-		        if( strpos( $ref, "google.com" ) !== false || strpos( $ref, "yahoo.com" ) !== false || strpos( $ref, "bing.com" ) !== false ) { 
-		            // is a referral
-		            $sereferral = true;
-		            $this->set_referral_cookie(true);
-		        } else {
-		            // doesn't look like it was a referrral
-		            $sereferral = false;
-		        	$this->set_referral_cookie(false);
-
-		        }
-		    // default to non referral if var is unvailable
-		    } else if ( $use_get_var == "true" && isset( $_GET[ $get_tracking_var ] ) ){
-		    	$sereferral = true;
-		        $this->set_referral_cookie(true);
-
-		    } else {
-		        $sereferral = false;
-		        $this->set_referral_cookie(false);
-
-		    }
+			$sereferral = $this->determine_if_referral();
+		   
 		} else {
 		    //otherwise consult the almighty cookie
 		    if ( $_COOKIE[ $cookieName ] == "true" ){
@@ -171,13 +145,41 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		    } else {
 		        $sereferral = false;
 		    }
-		    if ( $_COOKIE[ $cookieName ] == "true" ){
-		        $sereferral = true;
-		    } else {
-		        $sereferral = false;
-		    }
 		}
-		$this->referral= $sereferral;
+		$this->referral = $sereferral;
+
+	}
+	/**
+	 * determine_if_referral()
+	 * Figures out if the user is a referral based on the options in db.
+	 * Checks between get var and search engine referral.
+	 * @since 1.1.3
+	 * @uses set_referral_cookie() to set cookie before returning.
+	 * @return (bool) true if referral, false if not
+	 * 
+	 */
+	function determine_if_referral(){
+		$use_get_var = $this->options['use_get_var']->get_value();
+		$get_tracking_var = $this->options['get_tracking_var']->get_value();
+		if( ( $use_get_var == "search" || $use_get_var == "both" ) || isset( $_SERVER['HTTP_REFERER'] ) ) {
+
+	        // if so parse url...
+	        $ref = parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST );
+	        // and check if referral from google, yahoo, bing
+	        if( strpos( $ref, "google.com" ) !== false || strpos( $ref, "yahoo.com" ) !== false || strpos( $ref, "bing.com" ) !== false ) { 
+	            // is a referral
+	            $this->set_referral_cookie(true);
+	        	return true;
+	        }
+	    }
+
+	    if ( ( $use_get_var == "getvar" || $use_get_var == "both" ) && isset( $_GET[ $get_tracking_var ] ) ){
+	        $this->set_referral_cookie(true);
+	        return true;
+	    }
+
+        $this->set_referral_cookie(false);
+        return false;
 
 	}
 	/**
@@ -187,7 +189,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	 */
 	function set_referral_cookie($val){
 
-		$cookieName = $this->prefix . "referral";
+		$cookieName = self::$prefix . "referral";
 		$domain = $this->options['domain']->get_value();
 		$path = $this->options['path']->get_value();
 		$days = $this->options['cookie_length']->get_value();
@@ -202,7 +204,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		if ( $domain == '' ){
 			$domain = null;
 		}
-		$this->_log("Path is set to $path");
+		$this->logger->_log("Path is set to $path");
  		setcookie( $cookieName, $cookieval, $time, $path, $domain );
 
 	}
@@ -216,25 +218,66 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		if ( isset($this->numbers) || ! empty($this->numbers) )
 			return;
 		$phoneNumbers = array();
-		if ( $this->is_referral() ){
-		    $phoneNumbers[0] = $this->options["swappyNumber1"]->get_value();
-		    $phoneNumbers[1] = $this->options["swappyNumber2"]->get_value();
-		    $phoneNumbers[2] = $this->options["swappyNumber3"]->get_value();
-		} else {    
-		    $phoneNumbers[0] = $this->options["phoneNumber1"]->get_value();
-		    $phoneNumbers[1] = $this->options["phoneNumber2"]->get_value();
-		    $phoneNumbers[2] = $this->options["phoneNumber3"]->get_value();
+		$numbers = $this->options['phone_numbers']->get_value();
+		foreach ( $numbers as $values ) {
+			$phoneNumbers[] = $this->is_referral() ? $values['replacement_number'] : $values['default_number'];
 		}
 		$this->numbers = $phoneNumbers;
-	}	
+	}
+
+	/**
+	 * swappyNumber1()
+	 * @deprecated since 1.1.3, use swappyNumber() instead
+	 * Old style of short code for getting phone number
+	 * Was used before repeter field was introduced
+	 */
 	function swappyNumber1(){
 		return $this->numbers[0];
 	}
+	/**
+	 * swappyNumber2()
+	 * @deprecated since 1.1.3, use swappyNumber() instead
+	 * Old style of short code for getting phone number
+	 * Was used before repeter field was introduced
+	 */
 	function swappyNumber2(){
 		return $this->numbers[1];
 	}
+	/**
+	 * swappyNumber3()
+	 * @deprecated since 1.1.3, use swappyNumber() instead
+	 * Old style of short code for getting phone number
+	 * Was used before repeter field was introduced
+	 */
 	function swappyNumber3(){
 		return $this->numbers[2];
+	}
+	/**
+	 * swappyNumber()
+	 * Used for shortcode to get phone number. Shortcod accepts one argument, number.
+	 * Number is user friendly index, so starts at 1 instead of 0.
+	 * Number 1 is first on the list in the options. The next option is 2.
+	 * Returns nothing if the number is not set.
+	 * @param $atts is provided by shortcode
+	 * @param $content is not used but would be provided by shortcode
+	 * @return (string) requested phone number from db
+	 * @since 1.1.3
+	 */
+	function swappyNumber($atts, $content = null){
+
+		extract( shortcode_atts( 
+			array(
+				"number" => 1,
+				), $atts, 'swappy'
+			)
+		);
+		$number = intval($number);
+		$number--;
+		if ($number < 0 ) $number = 0;
+		if ( isset( $this->numbers[$number] ) )
+			return $this->numbers[$number];
+		return;
+
 	}
 	function appendJS(){
 		$infooter = $this->options['infooter']->get_value() == "true" ? true : false;
@@ -248,34 +291,106 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	}
 	function enque_phone_number_swappy_javascript(){
 		$this->get_numbers();
-		$phoneNumbers = $this->numbers;
-		
-		$jsTarget1 = $this->options["jsTarget1"]->get_value();
-		$jsTarget2 = $this->options["jsTarget2"]->get_value();
-		$jsTarget3 = $this->options["jsTarget3"]->get_value();
+
+		$numbers = $this->options['phone_numbers']->get_value();
+
+		$targets = array();
+		foreach ( $numbers as $values ) {
+			$targets[] = $values['js_target'];
+		}
+
+		// $jsTarget1 = $this->options["jsTarget1"]->get_value();
+		// $jsTarget2 = $this->options["jsTarget2"]->get_value();
+		// $jsTarget3 = $this->options["jsTarget3"]->get_value();
 
 		$jsvars = array(
-			"jsTarget1" => $jsTarget1,
-			"jsTarget2" => $jsTarget2,
-			"jsTarget3" => $jsTarget3,
-			"phoneNumbers" => $phoneNumbers
+			"jsTarget" => $targets,
+			"phoneNumbers" => $this->numbers
 		);
 		wp_localize_script( 'phone_number_swappy_javascript', $this->localize_object, $jsvars );
 		wp_enqueue_script( 'phone_number_swappy_javascript' );
 	}
 }
 
-
-function activation_test() {
-	if ( ! get_option("PhoneNumberSwappyVersion") ) {
+/**
+ * Version is not saved in database for future upgrades.
+ * This function sets the version number if it does not exist. 
+ * If it does not, then it goes through the upgraded function to restore old properties.
+ * This is triggered by register_activeation_hook
+ * @since 1.1.3
+ */
+function upgrade_phone_number_swappy_1_1_3() {
+	global $pns;
+	if ( ! get_option( "PhoneNumberSwappyVersion" ) ) {
 		update_option( "PhoneNumberSwappyVersion", PhoneNumberSwappy::$ver );
 		if ( get_option( "pns_use_get_var" ) == "true" ){
 			update_option( "pns_use_get_var", array( "getvar" ) );
+		} else {
+			update_option( "pns_use_get_var", array( "search" ) );
 		}
+		
+		$newnumbers = array(
+			"default_number" => array(),
+			"replacement_number" => array(),
+			"js_target" => array(),
+			"notes" => array()
+			);
+
+		$pns_phoneNumber1 = get_option( "pns_phoneNumber1" );
+		$pns_swappyNumber1 = get_option( "pns_swappyNumber1" );
+		$pns_jstarget1 = get_option( "pns_jstarget1" );
+		$pns_phoneNumber2 = get_option( "pns_phoneNumber2" );
+		$pns_swappyNumber2 = get_option( "pns_swappyNumber2" );
+		$pns_jstarget2 = get_option( "pns_jstarget2" );
+		$pns_phoneNumber3 = get_option( "pns_phoneNumber3" );
+		$pns_swappyNumber3 = get_option( "pns_swappyNumber3" );
+		$pns_jstarget3 = get_option( "pns_jstarget3" );
+
+
+		$_meta_rows = 0;
+
+		if ( $pns_phoneNumber1 || $pns_swappyNumber1 ){
+			$newnumbers["default_number"][] = $pns_phoneNumber1 ? $pns_phoneNumber1 : "";
+			$newnumbers["replacement_number"][] = $pns_swappyNumber1 ? $pns_swappyNumber1 : "";
+			$newnumbers["js_target"][] = $pns_jstarget1 ? $pns_jstarget1 : "";
+			$newnumbers["notes"][] = 'Phone Number 1';
+			$_meta_rows++;
+		}
+		if ( $pns_phoneNumber2 || $pns_swappyNumber2 ){
+			$newnumbers["default_number"][] = $pns_phoneNumber2 ? $pns_phoneNumber2  : "" ;
+			$newnumbers["replacement_number"][] = $pns_swappyNumber2 ? $pns_swappyNumber2  : "" ;
+			$newnumbers["js_target"][] = $pns_jstarget2 ? $pns_jstarget2  : "" ;
+			$newnumbers["notes"][] = 'Phone Number 2';
+			$_meta_rows++;
+		}
+		if ( $pns_phoneNumber3 || $pns_swappyNumber3 ){
+			$newnumbers["default_number"][] = $pns_phoneNumber3 ? $pns_phoneNumber3 : "";
+			$newnumbers["replacement_number"][] = $pns_swappyNumber3 ? $pns_swappyNumber3 : "";
+			$newnumbers["js_target"][] = $pns_jstarget3 ? $pns_jstarget3 : "";
+			$newnumbers["notes"][] = 'Phone Number 3';
+			$_meta_rows++;
+		}
+		$newnumbers[ '__meta_rows' ] = $_meta_rows;
+		// var_dump( $newnumbers );
+		// var_dump( $pns->options[ 'phone_numbers' ]->get_value() );
+		if ( $pns->options['phone_numbers']->set_value($newnumbers) ){
+			delete_option( "pns_phoneNumber1" );
+			delete_option( "pns_swappyNumber1" );
+			delete_option( "pns_jstarget1" );
+			delete_option( "pns_phoneNumber2" );
+			delete_option( "pns_swappyNumber2" );
+			delete_option( "pns_jstarget2" );
+			delete_option( "pns_phoneNumber3" );
+			delete_option( "pns_swappyNumber3" );
+			delete_option( "pns_jstarget3" );
+		} else {
+			wp_die("Phone Number Swappy failed to upgrade. Try reverting to previous working version of plugin. Sorry :'(");
+		}
+
 	}
 }
-// register_activation_hook( __FILE__, 'phone_number_swappy_activate' );
-add_action( 'plugins_loaded', 'activation_test' );
+register_activation_hook( __FILE__, 'upgrade_phone_number_swappy_1_1_3' );
+// add_action( 'plugins_loaded', 'upgrade_phone_number_swappy_1_1_3' );
 
 $optionfactory = new SwappyFactory();
 $loggingobject = new SwappyLogging( PhoneNumberSwappy::$name );
@@ -285,7 +400,8 @@ $metabox = new SwappyMetaBoxFactory();
 $pns = new PhoneNumberSwappy($optionfactory, $loggingobject, $notifierobject, $scriptmgmt, $metabox);
 
 add_action("init", array( $pns, "swappy_header_stuff") );
-// // add_action("wp_head", array( PhoneNumberSwappy::get_instance(), "appendJS") );
-// add_shortcode("swappy1", array( PhoneNumberSwappy::get_instance(), "swappyNumber1") );
-// add_shortcode("swappy2", array( PhoneNumberSwappy::get_instance(), "swappyNumber2") );
-// add_shortcode("swappy3", array( PhoneNumberSwappy::get_instance(), "swappyNumber3") );
+add_action("wp_head", array( $pns, "appendJS") );
+add_shortcode("swappy", array( $pns, "swappyNumber") );
+add_shortcode("swappy1", array( $pns, "swappyNumber1") );
+add_shortcode("swappy2", array( $pns, "swappyNumber2") );
+add_shortcode("swappy3", array( $pns, "swappyNumber3") );

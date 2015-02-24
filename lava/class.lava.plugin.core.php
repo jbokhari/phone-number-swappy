@@ -78,7 +78,6 @@ if (!class_exists('PhoneNumberSwappyCore')) :
 		public function enqueue_admin_scripts(){
 			global $pagenow;
 			if ( $this->is_options_page() ){
-				var_dump("enqueu_admin_sripts");
 				$this->scriptmgmt->the_scripts_by_tab( $this->current_tab );
 				$this->admin_enqueue_scripts_and_styles();
 			}
@@ -355,7 +354,6 @@ if (!class_exists('PhoneNumberSwappyCore')) :
 			$editscreen = ( $this->is_options_page() );
 			if ( $this->is_options_page() ) wp_enqueue_media();
 			if ( $this->useAdminCss && $editscreen ){
-				var_dump("what the heckever");
 				wp_enqueue_style( 'lavaadmincss', $this->cssdir . 'admin.css', array(), $version, $media = 'all' );
 			}
 			if ( $this->useAdminJs && $editscreen ){

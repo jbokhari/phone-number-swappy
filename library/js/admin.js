@@ -44,11 +44,13 @@ jQuery(document).ready(function($) {
     $('.invalid').on("hover", function(){
         $(this).removeClass("invalid");
     });*/
-    var useGetBox = $('#pns_use_get_var');
+    var radios = $('#pns_use_get_var-container input[type=radio]');
+    var useGetBox = radios.filter('input[value="both"], input[value="getvar"]');
+
     if ( useGetBox.is(":checked") ){
         $("#pns_get_tracking_var-container").show();
     }
-    useGetBox.on("click", function(){
+    radios.on("click", function(){
         if (useGetBox.is(":checked")){
             $("#pns_get_tracking_var-container").slideDown();
         }

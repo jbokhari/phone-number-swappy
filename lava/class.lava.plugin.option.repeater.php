@@ -122,6 +122,7 @@ class SwappyOption_repeater extends SwappyOption {
 	public function validate($newValue = ""){
 		$rows = $newValue["__meta_rows"];
 		$fixedNewValue = array();
+		// var_dump($newValue);
 		for ($i = 0; $i < $rows; $i++) {
 			$fixedNewValue[$i] = array();
 			foreach ($this->fields as $subfield ) {
@@ -132,6 +133,7 @@ class SwappyOption_repeater extends SwappyOption {
 		}
 		$fixedNewValue["__meta_rows"] = $rows;
 		$newValue = serialize($fixedNewValue);
+		// var_dump($newValue);
 		return $newValue;
 	}
 	public function register_needed_scripts(){

@@ -8,30 +8,42 @@ $dynamic = array( //array of available options
 	::::::::::::::::EXTERNAL:::::::::::::::
 	**************************************/
 	array(
+		"name" => "phone_numbers",
+		"label" => "Phone Numbers",
+		"type" => "repeater",
+		"in_menu" => true,
+		"fields" => array(
+			array(
+			 	"name" => "default_number",
+			 	"label" => "Default Phone #",
+			 	"type" => "str"
+			),
+			array(
+			 	"name" => "replacement_number",
+			 	"label" => "Referral Phone #",
+			 	"type" => "str"
+			),
+			array(
+			 	"name" => "js_target",
+			 	"label" => "JavaScript Target",
+			 	"type" => "str",
+			 	"default" => ".phone-swap-"
+			),
+			array(
+			 	"name" => "notes",
+			 	"label" => "Notes",
+			 	"type" => "textarea"
+			)
+		)
+	),
+  	/*
+	array(
 	      "name" => "phoneNumber1",
 	      "label" => "Default Phone Number 1",
 	      "type" => "str",
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
-	// array(
-	// 	"name" => "phone_numbers",
-	// 	"label" => "Phone Numbers",
-	// 	"type" => "repeater",
-	// 	"in_menu" => true,
-	// 	"fields" => array(
-	// 		array(
-	// 		 	"name" => "default_number",
-	// 		 	"label" => "Default Phone #",
-	// 		 	"type" => "str"
-	// 		),
-	// 		array(
-	// 		 	"name" => "replacement_number",
-	// 		 	"label" => "Referral Phone #",
-	// 		 	"type" => "str"
-	// 		)
-	// 	)
-	// ),
   	array(
 	      "name" => "swappyNumber1",
 	      "label" => "Referral Phone Number 1 (Twilio)",
@@ -94,6 +106,7 @@ $dynamic = array( //array of available options
 	      "tab" => 0,
 	      "in_js" => true
 	      ),
+	*/
 	/**
 	 * @since 1.1.3
 	 * Replaces old bool value with three different options
