@@ -76,7 +76,7 @@ require_once('lava/class.lava.plugin.core.php');
 /**
  * Class LavaPlugin
  * @uses LavaCorePlugin Version 2.2
- * @package ECT Related Content
+ * @package Phone Number Swappy
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	static $prefix = 'pns_';
@@ -172,12 +172,11 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	        	return true;
 	        }
 	    }
-
-	    if ( ( $use_get_var == "getvar" || $use_get_var == "both" ) && isset( $_GET[ $get_tracking_var ] ) ){
+	    
+	    if ( ( $use_get_var[0] == "getvar" || $use_get_var[0] == "both" ) && isset( $_GET[ $get_tracking_var ] ) ){
 	        $this->set_referral_cookie(true);
 	        return true;
 	    }
-
         $this->set_referral_cookie(false);
         return false;
 
@@ -390,7 +389,6 @@ function upgrade_phone_number_swappy_1_1_3() {
 	}
 }
 register_activation_hook( __FILE__, 'upgrade_phone_number_swappy_1_1_3' );
-// add_action( 'plugins_loaded', 'upgrade_phone_number_swappy_1_1_3' );
 
 $optionfactory = new SwappyFactory();
 $loggingobject = new SwappyLogging( PhoneNumberSwappy::$name );

@@ -131,6 +131,7 @@ $dynamic = array( //array of available options
 	      		"value" => "both"
 	      		)
 	      	),
+	      "default" => array("search"),
 	      "tab" => 0
 	      ),
 	array(
