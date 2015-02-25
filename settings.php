@@ -79,8 +79,8 @@ $dynamic = array( //array of available options
 	      ),
 	array(
 	      "name" => "swappy_reset_link",
-	      "label" => "Swappy Reset Link, e.g. example.com?swappy_reset",
-	      "description" => "(get var, e.g. example.com?swappy_reset)",
+	      "label" => "Swappy Reset Link",
+	      "description" => "e.g. if you set this to <code>swappy_reset</code>, visiting thiswebsite.com?swappy_reset will reset the cookie)",
 	      "type" => "str",
 	      "default" => "swappy_reset",
 	      "tab" => 1
