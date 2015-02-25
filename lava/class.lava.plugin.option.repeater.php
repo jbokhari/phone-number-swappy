@@ -122,7 +122,7 @@ class SwappyOption_repeater extends SwappyOption {
 		return $html;
 	}
 	public function validate($newValue = ""){
-		var_dump($newValue);
+		// var_dump($newValue);
 		$rows = $newValue["__meta_rows"];
 		$fixedNewValue = array();
 		// var_dump($newValue);
@@ -135,7 +135,7 @@ class SwappyOption_repeater extends SwappyOption {
 			}
 		}
 		$fixedNewValue["__meta_rows"] = $rows;
-		var_dump($fixedNewValue);
+		// var_dump($fixedNewValue);
 		$newValue = serialize($fixedNewValue);
 		return $newValue;
 	}
