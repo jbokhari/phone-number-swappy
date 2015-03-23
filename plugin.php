@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -80,7 +80,7 @@ require_once('lava/class.lava.plugin.core.php');
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	static $prefix = 'pns_';
-	static $ver = '1.1.3';
+	static $ver = '1.1.4';
 	static $name = 'pns';
 	public $option_prefix = 'pns_';
 	public $localize_object = 'PNS';
@@ -161,7 +161,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	function determine_if_referral(){
 		$use_get_var = $this->options['use_get_var']->get_value();
 		$get_tracking_var = $this->options['get_tracking_var']->get_value();
-		if( ( $use_get_var == "search" || $use_get_var == "both" ) || isset( $_SERVER['HTTP_REFERER'] ) ) {
+		if( ( $use_get_var[0] == "search" || $use_get_var[0] == "both" ) && isset( $_SERVER['HTTP_REFERER'] ) ) {
 
 	        // if so parse url...
 	        $ref = parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST );
@@ -320,7 +320,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
  */
 function upgrade_phone_number_swappy_1_1_3() {
 	try{
-		if ( ! get_option( "pns_phoneNumberSwappyVersion" ) ) {
+		if ( ! get_option( "pns_phoneNumberSwappyVersion" ) ) { //no need to compare since this is new
 			update_option( "pns_phoneNumberSwappyVersion", PhoneNumberSwappy::$ver );
 			if ( get_option( "pns_use_get_var" ) == "true" ){
 				update_option( "pns_use_get_var", array( "getvar" ) );
