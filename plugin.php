@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.1.4
+ * Version: 1.1.5
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -80,7 +80,7 @@ require_once('lava/class.lava.plugin.core.php');
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	static $prefix = 'pns_';
-	static $ver = '1.1.4';
+	static $ver = '1.1.5';
 	static $name = 'pns';
 	public $option_prefix = 'pns_';
 	public $localize_object = 'PNS';
@@ -309,6 +309,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		wp_localize_script( 'phone_number_swappy_javascript', $this->localize_object, $jsvars );
 		wp_enqueue_script( 'phone_number_swappy_javascript' );
 	}
+
 	/**  
 	 * filter_client_phone_option()
 	 * Filter options like 'client_phone' automatically.
@@ -318,13 +319,23 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	 * @since 1.1.5
 	 **/
 	function filter_client_phone_option(){
+
+		$this->get_numbers();
+
 		$numbers = $this->options['phone_numbers']->get_value();
+		// var_dump($numbers);
 		foreach ( $numbers as $values ) {
 			if ( isset( $values['filter_option'] ) && !empty( $values['filter_option'] ) ){
 				$number = $this->is_referral() ? $values['replacement_number'] : $values['default_number'];
-				add_filter( 'pre_option_' . $values['filter_option'], function($option) use ($number) { return $number; } );
+				// var_dump( $this->is_referral() );
+				add_filter( 'option_' . $values['filter_option'], function($option) use ($number) { return $number; } );
+				// var_dump($values);
+				// echo 'option_' . $values['filter_option'] . "<br>";
+				// echo get_option("client_phone");
+				// exit;
 			}
 		}
+		
 	}
 }
 
@@ -426,7 +437,8 @@ $pns = new PhoneNumberSwappy($optionfactory, $loggingobject, $notifierobject, $s
 // print_r(get_option("pns_phone_numbers"));
 // var_dump(get_option("pns_phone_numbers"));
 
-add_action("init", array( $pns, "swappy_header_stuff") );
+add_action("init", array( $pns, "swappy_header_stuff"), 40 );
+add_action("init", array( $pns, 'filter_client_phone_option' ), 41 );
 add_action("wp_head", array( $pns, "appendJS") );
 add_shortcode("swappy", array( $pns, "swappyNumber") );
 add_shortcode("swappy1", array( $pns, "swappyNumber1") );
