@@ -325,7 +325,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		$numbers = $this->options['phone_numbers']->get_value();
 		// var_dump($numbers);
 		foreach ( $numbers as $values ) {
-			if ( isset( $values['filter_option'] ) && !empty( $values['filter_option'] ) ){
+			if ( isset( $values['filter_option'] ) && !empty( $values['filter_option'] ) && $values['filter_option'] != "" ){
 				$number = $this->is_referral() ? $values['replacement_number'] : $values['default_number'];
 				// var_dump( $this->is_referral() );
 				add_filter( 'option_' . $values['filter_option'], function($option) use ($number) { return $number; } );
@@ -335,7 +335,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 				// exit;
 			}
 		}
-		
+
 	}
 }
 
