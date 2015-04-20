@@ -39,7 +39,7 @@ $dynamic = array( //array of available options
 			 	"name" => "filter_option",
 			 	"label" => "Filter Option",
 			 	"type" => "str",
-			 	"default" => "client_phone"
+			 	"default" => ""
 			),
 			array(
 			 	"name" => "notes",
