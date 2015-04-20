@@ -36,6 +36,12 @@ $dynamic = array( //array of available options
 			 	"default" => ".phone-swap-"
 			),
 			array(
+			 	"name" => "filter_option",
+			 	"label" => "Filter Option",
+			 	"type" => "str",
+			 	"default" => ""
+			),
+			array(
 			 	"name" => "notes",
 			 	"label" => "Notes",
 			 	"type" => "textarea"

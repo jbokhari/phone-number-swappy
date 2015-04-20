@@ -309,6 +309,23 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 		wp_localize_script( 'phone_number_swappy_javascript', $this->localize_object, $jsvars );
 		wp_enqueue_script( 'phone_number_swappy_javascript' );
 	}
+	/**  
+	 * filter_client_phone_option()
+	 * Filter options like 'client_phone' automatically.
+	 * Uses field in options setting (part of phone_numbers repeater)
+	 * Probably going to cause a lot of confusion but hopefully save more time overall!
+	 * @return void
+	 * @since 1.1.5
+	 **/
+	function filter_client_phone_option(){
+		$numbers = $this->options['phone_numbers']->get_value();
+		foreach ( $numbers as $values ) {
+			if ( isset( $values['filter_option'] ) && !empty( $values['filter_option'] ) ){
+				$number = $this->is_referral() ? $values['replacement_number'] : $values['default_number'];
+				add_filter( 'pre_option_' . $values['filter_option'], function($option) use ($number) { return $number; } );
+			}
+		}
+	}
 }
 
 /**
