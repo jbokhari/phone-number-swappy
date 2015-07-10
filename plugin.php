@@ -35,12 +35,12 @@ if (is_admin()) {
         'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
         'proper_folder_name' => 'phone-number-swappy', // this is the name of the folder your plugin lives in
         'api_url' => 'https://api.github.com/repos/jbokhari/phone-number-swappy', // the GitHub API url of your GitHub repo
-        'raw_url' => 'https://raw.github.com/jbokhari/phone-number-swappy/master', // the GitHub raw url of your GitHub repo
+        'raw_url' => 'https://raw.githubusercontent.com/jbokhari/phone-number-swappy/master/', // the GitHub raw url of your GitHub repo
         'github_url' => 'https://github.com/jbokhari/phone-number-swappy', // the GitHub url of your GitHub repo
         'zip_url' => 'https://github.com/jbokhari/phone-number-swappy/zipball/master', // the zip url of the GitHub repo
         'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
         'requires' => '4.0', // which version of WordPress does your plugin require?
-        'tested' => '4.1', // which version of WordPress is your plugin tested up to?
+        'tested' => '5.0', // which version of WordPress is your plugin tested up to?
         'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
     );
     $githubupdater = new WP_GitHub_Updater($config);
