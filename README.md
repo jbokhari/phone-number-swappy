@@ -1,6 +1,8 @@
 Phone Number Swappy
 ==========
 
+~Current Version:1.1.5~
+
 Simple Wordpress plugin to swap out phone numbers.
 
 Type in up to three phone number combinations. Use main phone number and alternate phone number pairs. The "Alt" phone number will be swapped out via jQuery when a user has been referred to by yahoo, bing or google.

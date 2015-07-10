@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.1.5
+ * Version: 1.1.6
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -26,6 +26,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+define("PNS_PATH", dirname(__FILE__));
+define("PNS_URL", plugin_dir_url( __FILE__ ) );
+
+require_once(PNS_PATH . '/update.php');
+if (is_admin()) {
+    $config = array(
+        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+        'proper_folder_name' => 'phone-number-swappy', // this is the name of the folder your plugin lives in
+        'api_url' => 'https://api.github.com/repos/jbokhari/phone-number-swappy', // the GitHub API url of your GitHub repo
+        'raw_url' => 'https://raw.github.com/jbokhari/phone-number-swappy/master', // the GitHub raw url of your GitHub repo
+        'github_url' => 'https://github.com/jbokhari/phone-number-swappy', // the GitHub url of your GitHub repo
+        'zip_url' => 'https://github.com/jbokhari/phone-number-swappy/zipball/master', // the zip url of the GitHub repo
+        'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+        'requires' => '4.0', // which version of WordPress does your plugin require?
+        'tested' => '4.1', // which version of WordPress is your plugin tested up to?
+        'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
+    );
+    $githubupdater = new WP_GitHub_Updater($config);
+}
 
 require_once( 'lava/class.lava.plugin.core.php' );
 //logging/error class implementation
@@ -54,24 +73,6 @@ require_once "lava/class.lava.metabox.factory.php";
 require_once "lava/class.lava.javascriptglobal.php";
 
 
-define("PNS_PATH", dirname(__FILE__));
-define("PNS_URL", plugin_dir_url( __FILE__ ) );
-require_once(PNS_PATH . '/update.php');
-if (is_admin()) {
-    $config = array(
-        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-        'proper_folder_name' => 'phone-number-swappy', // this is the name of the folder your plugin lives in
-        'api_url' => 'https://api.github.com/repos/jbokhari/phone-number-swappy', // the GitHub API url of your GitHub repo
-        'raw_url' => 'https://raw.github.com/jbokhari/phone-number-swappy/master', // the GitHub raw url of your GitHub repo
-        'github_url' => 'https://github.com/jbokhari/phone-number-swappy', // the GitHub url of your GitHub repo
-        'zip_url' => 'https://github.com/jbokhari/phone-number-swappy/zipball/master', // the zip url of the GitHub repo
-        'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-        'requires' => '4.0', // which version of WordPress does your plugin require?
-        'tested' => '4.1', // which version of WordPress is your plugin tested up to?
-        'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
-    );
-    $githubupdater = new WP_GitHub_Updater($config);
-}
 require_once('lava/class.lava.plugin.core.php');
 /**
  * Class LavaPlugin
@@ -80,7 +81,7 @@ require_once('lava/class.lava.plugin.core.php');
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	static $prefix = 'pns_';
-	static $ver = '1.1.5';
+	static $ver = '1.1.6';
 	static $name = 'pns';
 	public $option_prefix = 'pns_';
 	public $localize_object = 'PNS';
