@@ -1,7 +1,7 @@
 Phone Number Swappy
 ==========
 
-~Current Version:1.1.7~
+~Current Version:1.1.8~
 
 Simple Wordpress plugin to swap out phone numbers.
 

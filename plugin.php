@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.1.7
+ * Version: 1.1.8
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -30,7 +30,13 @@ define("PNS_PATH", dirname(__FILE__));
 define("PNS_URL", plugin_dir_url( __FILE__ ) );
 
 require_once(PNS_PATH . '/update.php');
-if (is_admin()) {
+
+add_action('admin_init', 'phone_number_swappy_updater');
+function phone_number_swappy_updater(){
+	if ( is_admin() && class_exists('WP_GitHub_Updater') && WP_GitHub_Updater::VERSION == '1.6' ) {
+		if ( !defined('WP_GITHUB_FORCE_UPDATE') && isset( $_GET['force-check'] ) && $_GET['force-check'] == '1' && current_user_can('update_plugins') ){	
+			define('WP_GITHUB_FORCE_UPDATE', true);
+		}
     $config = array(
         'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
         'proper_folder_name' => 'phone-number-swappy', // this is the name of the folder your plugin lives in
