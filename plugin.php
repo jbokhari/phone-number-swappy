@@ -3,7 +3,7 @@
  * Plugin Name: Phone Number Swappy
  * Plugin URI: http://www.anchorwave.com
  * Description: Used to swap phone numbers
- * Version: 1.1.8
+ * Version: 1.1.10
  * Author: Jameel Bokhari
  * Author URI: http://www.codeatlarge.com
  * License: GPL2
@@ -29,28 +29,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 define("PNS_PATH", dirname(__FILE__));
 define("PNS_URL", plugin_dir_url( __FILE__ ) );
 
-require_once(PNS_PATH . '/update.php');
 
 add_action('admin_init', 'phone_number_swappy_updater');
 function phone_number_swappy_updater(){
+	if ( ! class_exists( 'WP_GitHub_Updater' ) )
+		require_once( PNS_PATH . '/update.php' );
+		
 	if ( is_admin() && class_exists('WP_GitHub_Updater') && WP_GitHub_Updater::VERSION == '1.6' ) {
 		if ( !defined('WP_GITHUB_FORCE_UPDATE') && isset( $_GET['force-check'] ) && $_GET['force-check'] == '1' && current_user_can('update_plugins') ){	
 			define('WP_GITHUB_FORCE_UPDATE', true);
 		}
-    $config = array(
-        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-        'proper_folder_name' => 'phone-number-swappy', // this is the name of the folder your plugin lives in
-        'api_url' => 'https://api.github.com/repos/jbokhari/phone-number-swappy', // the GitHub API url of your GitHub repo
-        'raw_url' => 'https://raw.github.com/jbokhari/phone-number-swappy/master', // the GitHub raw url of your GitHub repo
-        'github_url' => 'https://github.com/jbokhari/phone-number-swappy', // the GitHub url of your GitHub repo
-        'zip_url' => 'https://github.com/jbokhari/phone-number-swappy/zipball/master', // the zip url of the GitHub repo
-        'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-        'requires' => '4.0', // which version of WordPress does your plugin require?
-        'tested' => '4.2', // which version of WordPress is your plugin tested up to?
-        'readme' => 'README.md',
-        'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
-    );
-    $githubupdater = new WP_GitHub_Updater($config);
+	    $config = array(
+	        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+	        'proper_folder_name' => 'phone-number-swappy', // this is the name of the folder your plugin lives in
+	        'api_url' => 'https://api.github.com/repos/jbokhari/phone-number-swappy', // the GitHub API url of your GitHub repo
+	        'raw_url' => 'https://raw.github.com/jbokhari/phone-number-swappy/master', // the GitHub raw url of your GitHub repo
+	        'github_url' => 'https://github.com/jbokhari/phone-number-swappy', // the GitHub url of your GitHub repo
+	        'zip_url' => 'https://github.com/jbokhari/phone-number-swappy/zipball/master', // the zip url of the GitHub repo
+	        'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+	        'requires' => '4.0', // which version of WordPress does your plugin require?
+	        'tested' => '4.2', // which version of WordPress is your plugin tested up to?
+	        'readme' => 'README.md',
+	        'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
+	    );
+	    $githubupdater = new WP_GitHub_Updater($config);
+	}
 }
 
 require_once( 'lava/class.lava.plugin.core.php' );
@@ -88,7 +91,7 @@ require_once('lava/class.lava.plugin.core.php');
  */
 class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	static $prefix = 'pns_';
-	static $ver = '1.1.7';
+	static $ver = '1.1.10';
 	static $name = 'pns';
 	public $option_prefix = 'pns_';
 	public $localize_object = 'PNS';
@@ -288,7 +291,7 @@ class PhoneNumberSwappy extends PhoneNumberSwappyCore {
 	}
 	function appendJS(){
 		$infooter = $this->options['infooter']->get_value() == "true" ? true : false;
-		wp_register_script( 'phone_number_swappy_javascript', $this->jsdir . 'frontend.js', array( 'jquery' ), $this->ver, $infooter );
+		wp_register_script( 'phone_number_swappy_javascript', $this->jsdir . 'frontend.js', array( 'jquery' ), self::$ver, $infooter );
 		//makes sure numbers are set
 		
 		// print_r($this);
